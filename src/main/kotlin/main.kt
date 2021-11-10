@@ -1,5 +1,7 @@
+import tasks.second.HTMLText
+
 fun main(args: Array<String>) {
-    val fileNums:NumsFile = NumsFile("C:\\Users\\popov\\Desktop\\numbers.txt")
+    val fileNums:NumsFile = NumsFile("C:\\Users\\Administrator\\Desktop\\Numbs.txt")
 
     var max: Double? = fileNums.maximum
     var min: Double? = fileNums.minimum
@@ -11,4 +13,12 @@ fun main(args: Array<String>) {
     println("Summ of doubles in file is $summ")
 
     arr?.forEach{ print("$it ")}
+
+
+
+
+    var textHTMLText = HTMLText("C:\\Users\\Administrator\\Desktop\\HTML.txt")
+    textHTMLText.MoveTo(5)
+    textHTMLText.undo()
+    println(1)
 }

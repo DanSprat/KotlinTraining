@@ -55,7 +55,4 @@ class NumsFile(private val path:String) {
 
     }
 
-
-
-
 }
