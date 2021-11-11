@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
 
 
     var textHTMLText = HTMLText("C:\\Users\\Administrator\\Desktop\\HTML.txt")
-    textHTMLText.MoveTo(5)
+    textHTMLText.moveTo(5)
     textHTMLText.undo()
-    println(1)
+
 }

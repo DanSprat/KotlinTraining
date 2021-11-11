@@ -10,18 +10,20 @@ class HTMLText(private var path:String) {
     private var absolutePosition:Int
     private var position:Int
     private var operationStack:ArrayDeque<Executable> = ArrayDeque()
+    private var cursor:Cursor
 
     companion object {
-        var tags: ArrayList<String> = ArrayList(Arrays.asList("<b>","</b>","<i>","</i>","<u>","</u>"))
+        var tags: ArrayList<String> = ArrayList(listOf("<b>","</b>","<i>","</i>","<u>","</u>"))
     }
     init {
         File(path).bufferedReader().lines().forEach { text.append(it) }
         absolutePosition = 3
         position = 0
         size = text.length
+        cursor = Cursor(0,3)
     }
 
-    fun MoveTo(step:Int){
+    fun moveTo(step:Int){
         var move:Move = Move(step)
         move.execute()
         operationStack.add(move)
@@ -33,47 +35,54 @@ class HTMLText(private var path:String) {
     }
 
 
-    private inner class Move(val pos:Int): Executable{
+
+    private inner class Cursor(var pos: Int,var absPos:Int)
+
+    private inner class Move(val pos:Int): Executable {
         var absolutePosPrevious:Int = absolutePosition
+        var posPrevious:Int = pos
 
         override fun execute() {
           absolutePosPrevious = absolutePosition
-          var currentPos:Int = 0
-          var currentAbsPos:Int = absolutePosition
+          var diff = pos - cursor.pos
+          var step:Int = if (diff > 0) 1 else -1
+
           var strBuilder:StringBuilder = StringBuilder()
           var isBracket:Boolean = false
 
-          while (currentPos < pos){
-              absolutePosition++
+          while (cursor.pos != pos){
+              cursor.absPos+=step
               if (isBracket){
                   var arr:ArrayList<String> = ArrayList()
-                  strBuilder.append(text[absolutePosition])
-                  if (strBuilder.length == 4 || text[absolutePosition]=='>') {
+                  strBuilder.append(text[cursor.absPos])
+                  if (strBuilder.length == 4 || text[cursor.absPos]=='>') {
                       if (strBuilder.toString() !in tags){
-                          currentPos += strBuilder.length
+                          cursor.pos += strBuilder.length
                           strBuilder = StringBuilder()
                       }
                       isBracket = false
                   }
               } else {
-                  if (text[absolutePosition] == '<') {
+                  if (text[cursor.absPos] == '<') {
                       strBuilder.append('<')
                       isBracket = true
                   } else {
-                      currentPos++
+                      cursor.pos+=step
                   }
 
               }
           }
-            position+=pos
+            cursor.pos+=pos
         }
 
         override fun undo() {
-            position -= pos
-            absolutePosition = absolutePosPrevious
+            cursor.pos = posPrevious
+            cursor.absPos = absolutePosPrevious
         }
 
     }
+
+
 
 
 }
