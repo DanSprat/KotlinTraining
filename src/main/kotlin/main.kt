@@ -1,5 +1,6 @@
 import tasks.second.HTMLText
 
+
 fun main(args: Array<String>) {
     val fileNums:NumsFile = NumsFile("C:\\Users\\Administrator\\Desktop\\Numbs.txt")
 
@@ -17,8 +18,10 @@ fun main(args: Array<String>) {
 
 
 
-    var textHTMLText = HTMLText("C:\\Users\\Administrator\\Desktop\\HTML.txt")
-    textHTMLText.moveTo(5)
-    textHTMLText.undo()
-
+    var textHTMLText = HTMLText("C:\\Users\\Administrator\\Desktop\\HTML.txt").also {
+        println(1)
+    }
+    textHTMLText.moveTo(3)
+    textHTMLText.remove()
+    textHTMLText.insert('l')
 }

@@ -34,13 +34,25 @@ class HTMLText(private var path:String) {
         undoEx.undo()
     }
 
+    fun remove(){
+        Remove().also {
+            it.execute()
+            operationStack.addFirst(it)
+        }
+    }
 
+    fun insert (char:Char) {
+        Insert(char).also {
+            it.execute()
+            operationStack.addFirst(it)
+        }
+    }
 
     private inner class Cursor(var pos: Int,var absPos:Int)
 
     private inner class Move(val pos:Int): Executable {
         var absolutePosPrevious:Int = absolutePosition
-        var posPrevious:Int = pos
+        var posPrevious:Int = position
 
         override fun execute() {
           absolutePosPrevious = absolutePosition
@@ -72,7 +84,6 @@ class HTMLText(private var path:String) {
 
               }
           }
-            cursor.pos+=pos
         }
 
         override fun undo() {
@@ -82,6 +93,36 @@ class HTMLText(private var path:String) {
 
     }
 
+    private inner class Remove: Executable {
+
+        var char:Char = text[cursor.absPos]
+        var move:Move = Move(cursor.pos - 1)
+
+        override fun execute() {
+            text.deleteCharAt(cursor.absPos)
+            move.execute()
+        }
+
+        override fun undo() {
+            move.undo()
+            text.setCharAt(cursor.absPos,char)
+        }
+
+    }
+
+    private inner class Insert(val char: Char): Executable {
+        var move:Move = Move(cursor.pos + 1)
+        override fun execute() {
+            text.setCharAt(cursor.absPos,char)
+            move.execute()
+        }
+
+        override fun undo() {
+            move.undo()
+            text.deleteCharAt(cursor.absPos)
+        }
+
+    }
 
 
 
